@@ -1,14 +1,19 @@
+import java.time.LocalDate;
+
 public class Huesped {
     //atributos
-    private String nombre;
-    private String tipoDocumento;
-    private int numeroDocumento;
-    private String pais;
-    private String fechaNacimiento;
+    private final String nombre;
+    private final String tipoDocumento;
+    private final int numeroDocumento;
+    private final String pais;
+    private final LocalDate fechaNacimiento;
     private Reserva reserva;
     //constructores
 
-    public Huesped(String nombre, String tipoDocumento, int numeroDocumento, String pais, String fechaNacimiento) {
+    /**
+     * Crea un huésped con datos básicos
+     */
+    public Huesped(String nombre, String tipoDocumento, int numeroDocumento, String pais, LocalDate fechaNacimiento) {
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numeroDocumento;
@@ -17,4 +22,28 @@ public class Huesped {
     }
 
     //métodos
+    /**
+     * Asigna una reserva a un huésped
+     * */
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
+    }
+
+    /**
+     * Devuelve el nombre, tipo y número de documento del huésped
+     * */
+    public String DetallesMinimos() {
+        return "Huésped: " + nombre + " - " + tipoDocumento + ": " + numeroDocumento + "\n";
+    }
+
+    /**
+     * Devuelve los detalles completos del huésped
+     * */
+    public String Detalles() {
+        String detalles = "Huésped: " + nombre + " - " + tipoDocumento + " " + numeroDocumento + " - " + pais + " - " + fechaNacimiento;
+        if (reserva != null) {
+            detalles += " - Reserva: " + reserva;
+        }
+        return detalles;
+    }
 }
