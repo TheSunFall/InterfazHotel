@@ -75,17 +75,6 @@ public class Habitacion {
     }
 
     /**
-     * Elimina al huésped en la posición de la lista indicada
-     * @param pos la posición del huésped a eliminar
-     * */
-    private void EliminarHuesped(int pos) {
-        for (int i = pos; i < huespedesActuales - 1; i++) {
-            huespedes[i] = huespedes[i + 1];
-        }
-        huespedesActuales--;
-    }
-
-    /**
      * Devuelve la disponibilidad de la habitación
      * */
     public boolean Disponible() {
@@ -98,19 +87,10 @@ public class Habitacion {
      * */
     public void Deshabilitar() {
         for (int i = 0; i < huespedesActuales; i++) {
-            huespedes[i].setReserva(null);
+            huespedes[i].Reservar(null);
             huespedes[i] = null;
         }
         huespedesActuales = 0;
         this.disponible = false;
-    }
-}
-
-class TestHabitacion {
-    public static void main(String[] args) {
-        Habitacion habitacion = new Habitacion(101);
-        Huesped huesped1 = new Huesped("Juan", "DNI", 12345678, "Argentina", LocalDate.of(1990, 1, 1));
-        habitacion.AgregarHuesped(huesped1);
-        System.out.println(habitacion.Detalles());
     }
 }

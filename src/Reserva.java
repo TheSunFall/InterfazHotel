@@ -10,8 +10,8 @@ public class Reserva {
     //constructores
 
     /**
-     * Crea una reserva con la fecha de inicio de hoy y la fecha de fin en la cantidad de días indicada
-     *
+     * Crea una reserva con la fecha de inicio de hoy y la fecha de fin en la cantidad de días indicada.
+     * Asigna automáticamente la reserva a los huéspedes
      * @param codigoHabitacion el código de la habitación a reservar
      * @param dias             la cantidad de días que durará la reserva
      */
@@ -20,20 +20,18 @@ public class Reserva {
         this.huespedes = huespedes;
         this.fechaInicio = LocalDate.now();
         this.fechaFin = fechaInicio.plusDays(dias);
+        for (Huesped huesped : huespedes) {
+            huesped.Reservar(this);
+        }
     }
 
-    /**
-     * Crea una reserva con las fechas de inicio y fin indicadas
-     *
-     * @param codigoHabitacion el código de la habitación a reservar
-     * @param fechaInicio      la fecha de inicio de la reserva
-     * @param fechaFin         la fecha de fin de la reserva
-     */
-    public Reserva(int codigoHabitacion, LocalDate fechaInicio, LocalDate fechaFin, Huesped[] huespedes) {
+    public Reserva(int codigoHabitacion, int dias, Huesped huesped) {
         this.codigoHabitacion = codigoHabitacion;
-        this.huespedes = huespedes;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
+        this.huespedes = new Huesped[1];
+        this.huespedes[0] = huesped;
+        huesped.Reservar(this);
+        this.fechaInicio = LocalDate.now();
+        this.fechaFin = fechaInicio.plusDays(dias);
     }
 
     //métodos
@@ -44,4 +42,10 @@ public class Reserva {
         fechaFin = fechaFin.plusDays(dias);
     }
 
+    /**
+     * Devuelve los detalles de la reserva
+     * */
+    public String Detalles() {
+        return "Reserva: " + codigoHabitacion + " - " + fechaInicio + " - " + fechaFin;
+    }
 }

@@ -25,7 +25,7 @@ public class Huesped {
     /**
      * Asigna una reserva a un huésped
      * */
-    public void setReserva(Reserva reserva) {
+    public void Reservar(Reserva reserva) {
         this.reserva = reserva;
     }
 
@@ -33,7 +33,7 @@ public class Huesped {
      * Devuelve el nombre, tipo y número de documento del huésped
      * */
     public String DetallesMinimos() {
-        return "Huésped: " + nombre + " - " + tipoDocumento + ": " + numeroDocumento + "\n";
+        return "Huésped: " + nombre + " - " + tipoDocumento + ": " + numeroDocumento;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Huesped {
     public String Detalles() {
         String detalles = "Huésped: " + nombre + " - " + tipoDocumento + " " + numeroDocumento + " - " + pais + " - " + fechaNacimiento;
         if (reserva != null) {
-            detalles += " - Reserva: " + reserva;
+            detalles += " - Reserva: " + reserva.Detalles();
         }
         return detalles;
     }
