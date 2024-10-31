@@ -1,40 +1,39 @@
-import java.time.LocalDate;
-
-public class Habitacion {
-    //atributos
-    final private int maxHuespedes = 4; //determinado por el tipo de habitación
-    final private float precioNoche = 100; //determinado por el tipo de habitación
+public abstract class Habitacion {
+    final private int maxHuespedes; //determinado por el tipo de habitación
     private final int codigo;
+    private final Huesped[] huespedes;
+    private float precioNoche; //determinado por el tipo de habitación
     private int huespedesActuales;
-    private boolean disponible = true;
-    private final Huesped[] huespedes = new Huesped[maxHuespedes];
+    private boolean disponible;
 
-    //constructores
     /**
      * Crear una habitación con un código y con un máximo de huéspedes y precio por noche predeterminados
-     * */
-    public Habitacion(int codigo) {
+     */
+    public Habitacion(int codigo, int maxHuespedes, float precioNoche) {
+        this.maxHuespedes = maxHuespedes;
         this.codigo = codigo;
+        this.precioNoche = precioNoche;
+        this.huespedesActuales = 0;
+        this.disponible = true;
+        this.huespedes = new Huesped[maxHuespedes];
     }
 
-    //métodos
     /**
      * Devuelve los detalles de la habitación
-     * */
+     */
     public String Detalles() {
-        String detalles = "Habitación " + codigo + " - ";
         if (!disponible) {
-            detalles += "Ocupada";
+            return codigo + " - Ocupada";
         } else {
-            detalles += "Disponible\nPrecio por noche: " + precioNoche + "\n";
+            return codigo + " - Disponible\nPrecio por noche: " + precioNoche + "\n";
         }
-        return detalles;
     }
 
     /**
      * Busca un huésped y devuelve su posición en la lista
+     *
      * @param huesped el huésped a buscar
-     * */
+     */
     private int BuscarHuesped(Huesped huesped) {
         for (int i = 0; i < huespedesActuales; i++) {
             if (huespedes[i] == huesped) {
@@ -46,8 +45,9 @@ public class Habitacion {
 
     /**
      * Agrega a un huésped, siempre que haya espacio disponible
+     *
      * @param huesped el huésped a agregar
-     * */
+     */
     public boolean AgregarHuesped(Huesped huesped) {
         if (huespedesActuales < maxHuespedes) {
             huespedes[huespedesActuales] = huesped;
@@ -60,8 +60,9 @@ public class Habitacion {
 
     /**
      * Elimina al huésped indicado, si está en la habitación
+     *
      * @param huesped el huésped a eliminar
-     * */
+     */
     public boolean EliminarHuesped(Huesped huesped) {
         if (BuscarHuesped(huesped) != -1) {
             for (int i = BuscarHuesped(huesped); i < huespedesActuales - 1; i++) {
@@ -76,7 +77,7 @@ public class Habitacion {
 
     /**
      * Devuelve la disponibilidad de la habitación
-     * */
+     */
     public boolean Disponible() {
         return disponible;
     }
@@ -84,7 +85,7 @@ public class Habitacion {
     /**
      * Deshabilita la habitación y elimina a los huéspedes
      * Elimina la reserva de los huéspedes, el hotel tiene que eliminar la reserva de su lista después
-     * */
+     */
     public void Deshabilitar() {
         for (int i = 0; i < huespedesActuales; i++) {
             huespedes[i].Reservar(null);
@@ -92,5 +93,17 @@ public class Habitacion {
         }
         huespedesActuales = 0;
         this.disponible = false;
+    }
+
+    public int getHuespedesActuales() {
+        return huespedesActuales;
+    }
+
+    public float getPrecioNoche() {
+        return precioNoche;
+    }
+
+    public Huesped[] getHuespedes() {
+        return huespedes;
     }
 }

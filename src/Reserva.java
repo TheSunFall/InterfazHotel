@@ -46,6 +46,6 @@ public class Reserva {
      * Devuelve los detalles de la reserva
      * */
     public String Detalles() {
-        return "Reserva: " + codigoHabitacion + " - " + fechaInicio + " - " + fechaFin;
+        return "Reserva: Habitación " + codigoHabitacion + " - Periodo " + fechaInicio + " - " + fechaFin;
     }
 }
