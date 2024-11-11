@@ -1,12 +1,11 @@
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Hotel {
     //atributos
     private final int pisos;
     private final int numeros;
     private final Habitacion[][] habitaciones;
-    private Reserva[] reservas;
-    private int cantidadReservas;
+    private ArrayList<Reserva> reservas;
     //constructores
 
     /**
@@ -15,13 +14,15 @@ public class Hotel {
     public Hotel(int pisos, int numeros) {
         this.pisos = pisos;
         this.numeros = numeros;
-        this.cantidadReservas = 0;
-        this.reservas = new Reserva[100]; //TODO: convertir a ArrayList para el entregable 3
+        this.reservas = new ArrayList<Reserva>();
         this.habitaciones = new Habitacion[pisos][numeros];
     }
 
     //métodos
-    public Habitacion getHabitacion(int piso, int numero) {
+    public Habitacion getHabitacion(int piso, int numero) throws HabitacionNoDisponible {
+        if (habitaciones[piso][numero] == null || piso >= pisos || numero >= numeros) {
+            throw new HabitacionNoDisponible();
+        }
         return habitaciones[piso][numero];
     }
 
@@ -36,18 +37,25 @@ public class Hotel {
     /**
      * Crea una habitación en el piso y número indicados
      */
-    public boolean CrearHabitacion(int piso, int numero, char tipo) {
-        if (habitaciones[piso][numero] == null) {
-            int codigo = (piso + 1) * 100 + numero + 1;
-            switch (tipo) {
-                case 's': habitaciones[piso][numero] = new HSuite(codigo); break;
-                case 'e': habitaciones[piso][numero] = new HEjecutiva(codigo); break;
-                case 'b': habitaciones[piso][numero] = new HBasica(codigo); break;
-                default: return false;
-            }
-            return true;
-        } else {
-            return false;
+    public void CrearHabitacion(int piso, int numero, char tipo) throws Sobreescritura {
+        if (habitaciones[piso][numero] != null) {
+            piso = piso + 1;
+            numero = numero + 1;
+            throw new Sobreescritura("Habitación en el piso " + piso + " y número " + numero);
+        }
+        int codigo = (piso + 1) * 100 + numero + 1;
+        switch (tipo) {
+            case 's':
+                habitaciones[piso][numero] = new HSuite(codigo);
+                break;
+            case 'e':
+                habitaciones[piso][numero] = new HEjecutiva(codigo);
+                break;
+            case 'b':
+                habitaciones[piso][numero] = new HBasica(codigo);
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de habitación no válido");
         }
     }
 
@@ -81,32 +89,28 @@ public class Hotel {
      * @param numero    el número de la habitación a reservar
      * @param dias      la cantidad de días que durará la reserva
      */
-    public boolean CrearReserva(Huesped[] huespedes, int piso, int numero, int dias) {
-        if (habitaciones[piso][numero] != null && habitaciones[piso][numero].Disponible()) {
-            int codigo = piso * 100 + numero;
-            Reserva reserva = new Reserva(codigo, dias, huespedes);
-            reservas[cantidadReservas] = reserva;
-            cantidadReservas++;
-            for (Huesped huesped : huespedes) {
-                habitaciones[piso][numero].AgregarHuesped(huesped);
-            }
-            return true;
-        } else {
-            return false;
+    public void CrearReserva(Huesped[] huespedes, int piso, int numero, int dias) throws HabitacionNoDisponible {
+        if (habitaciones[piso][numero] == null || !habitaciones[piso][numero].Disponible()) {
+            throw new HabitacionNoDisponible();
+        }
+        int codigo = (piso+1) * 100 + numero+1;
+        Reserva reserva = new Reserva(codigo, dias, huespedes);
+        reservas.add(reserva);
+
+        for (Huesped huesped : huespedes) {
+            habitaciones[piso][numero].AgregarHuesped(huesped);
         }
     }
-    public boolean CrearReserva(Huesped huesped, int piso, int numero, int dias) {
-        if (habitaciones[piso][numero] != null && habitaciones[piso][numero].Disponible()) {
-            int codigo = piso * 100 + numero;
-            Reserva reserva = new Reserva(codigo, dias, huesped);
-            reservas[cantidadReservas] = reserva;
-            cantidadReservas++;
-            habitaciones[piso][numero].AgregarHuesped(huesped);
 
-            return true;
-        } else {
-            return false;
+    public void CrearReserva(Huesped huesped, int piso, int numero, int dias) throws HabitacionNoDisponible {
+
+        if (habitaciones[piso][numero] == null || !habitaciones[piso][numero].Disponible()) {
+            throw new HabitacionNoDisponible();
         }
+        int codigo = (piso+1) * 100 + numero+1;
+        Reserva reserva = new Reserva(codigo, dias, huesped);
+        reservas.add(reserva);
+        habitaciones[piso][numero].AgregarHuesped(huesped);
     }
 }
 

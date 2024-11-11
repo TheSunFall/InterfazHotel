@@ -1,17 +1,16 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class InterfazHotel implements Menu, MenuAdmin {
     private final Hotel hotel;
     private final Scanner scanner;
-    private Admin[] admins;
-    private int cantAdmins;
+    private ArrayList<Admin> admins;
 
     public InterfazHotel(int pisos, int numeros) {
         hotel = new Hotel(pisos, numeros);
         scanner = new Scanner(System.in);
-        admins = new Admin[10];
-        admins[0] = new Admin("Juan", "Pérez", "admin", "1234");
-        cantAdmins = 1;
+        admins = new ArrayList<Admin>();
+        admins.add(new Admin("Juan", "Pérez", "admin", "1234"));
     }
 
     public static void main(String[] args) {
@@ -66,7 +65,6 @@ public class InterfazHotel implements Menu, MenuAdmin {
         System.out.print("Ingrese el número de huéspedes: ");
         int numHuespedes = scanner.nextInt();
         scanner.nextLine();
-
         Huesped[] huespedes = new Huesped[numHuespedes];
         for (int i = 0; i < numHuespedes; i++) {
             System.out.print("Ingrese los nombres del huésped " + (i + 1) + ": ");
@@ -77,10 +75,8 @@ public class InterfazHotel implements Menu, MenuAdmin {
             String tipoDocumento = scanner.nextLine();
             System.out.print("Ingrese el número de documento: ");
             String numeroDocumento = scanner.nextLine();
-            scanner.nextLine();
             System.out.print("Ingrese el país: ");
             String pais = scanner.nextLine();
-
             huespedes[i] = new Huesped(nombres, apellidos, tipoDocumento, numeroDocumento, pais);
         }
 
@@ -90,11 +86,11 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int numero = scanner.nextInt();
         System.out.print("Ingrese el número de días de la reserva: ");
         int dias = scanner.nextInt();
-
-        if (hotel.CrearReserva(huespedes, piso, numero, dias)) {
+        try {
+            hotel.CrearReserva(huespedes, piso, numero, dias);
             System.out.println("Reserva realizada con éxito.");
-        } else {
-            System.out.println("No se pudo realizar la reserva. Verifique la disponibilidad.");
+        } catch (HabitacionNoDisponible e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -103,14 +99,14 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int piso = scanner.nextInt();
         System.out.print("Ingrese el número de la habitación: ");
         int numero = scanner.nextInt();
-
-        Habitacion habitacion = hotel.getHabitacion(piso, numero);
-
-        if (habitacion != null && !habitacion.Disponible()) {
+        Habitacion habitacion;
+        try {
+            habitacion = hotel.getHabitacion(piso, numero);
             habitacion.Deshabilitar();
+            habitacion.Disponible(true);
             System.out.println("Salida registrada con éxito.");
-        } else {
-            System.out.println("No se pudo registrar la salida. La habitación no está ocupada.");
+        } catch (HabitacionNoDisponible e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -119,16 +115,17 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int piso = scanner.nextInt();
         System.out.print("Ingrese el número de la habitación: ");
         int numero = scanner.nextInt();
-
-        Habitacion habitacion = hotel.getHabitacion(piso, numero);
-        if (habitacion != null && !habitacion.Disponible()) {
-            float total = habitacion.getPrecioNoche() * habitacion.getHuespedesActuales(); // Total simple, puedes ajustar según las políticas
-            System.out.println("Boleta de Pago:");
-            System.out.println("Habitación: " + habitacion.Detalles());
-            System.out.println("Total a pagar: " + total);
-        } else {
-            System.out.println("No se pudo generar la boleta. La habitación no está ocupada.");
+        Habitacion habitacion;
+        try {
+            habitacion = hotel.getHabitacion(piso, numero);
+        } catch (HabitacionNoDisponible e) {
+            System.out.println(e.getMessage());
+            return;
         }
+        float total = habitacion.getPrecioNoche() * habitacion.getHuespedesActuales(); // Total simple, puedes ajustar según las políticas
+        System.out.println("Boleta de Pago:");
+        System.out.println("Habitación: " + habitacion.Detalles());
+        System.out.println("Total a pagar: " + total);
     }
 
     public boolean validarAdministrador() {
@@ -138,7 +135,7 @@ public class InterfazHotel implements Menu, MenuAdmin {
         String passwordIngresado = scanner.nextLine();
 
         for (Admin admin : admins) {
-            if (admin != null && usuarioIngresado.equals(admin.getUsuario()) && passwordIngresado.equals(admin.getContrasena())) {
+            if (usuarioIngresado.equals(admin.getUsuario()) && passwordIngresado.equals(admin.getContrasena())) {
                 System.out.println("Acceso concedido.");
                 return true;
             }
@@ -167,7 +164,7 @@ public class InterfazHotel implements Menu, MenuAdmin {
 
             switch (opcionAdmin) {
                 case 1:
-                    añadirHabitacion();
+                    aniadirHabitacion();
                     break;
                 case 2:
                     modificarHabitacion();
@@ -190,17 +187,18 @@ public class InterfazHotel implements Menu, MenuAdmin {
         } while (opcionAdmin != 0);
     }
 
-    public void añadirHabitacion() {
+    public void aniadirHabitacion() {
         System.out.print("Ingrese el piso de la nueva habitación: ");
         int piso = scanner.nextInt() - 1;
         System.out.print("Ingrese el número de la nueva habitación: ");
         int numero = scanner.nextInt() - 1;
         System.out.println("Ingrese tipo de habitación: (b)ásica, (e)jecutiva, (s)uite: ");
         char tipo = scanner.next().charAt(0);
-        if (hotel.CrearHabitacion(piso, numero, tipo)) {
+        try {
+            hotel.CrearHabitacion(piso, numero, tipo);
             System.out.println("Habitación añadida con éxito.");
-        } else {
-            System.out.println("No se pudo añadir la habitación.");
+        } catch (Sobreescritura | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -209,13 +207,13 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int piso = scanner.nextInt();
         System.out.print("Ingrese el número de la habitación: ");
         int numero = scanner.nextInt();
-
-        Habitacion habitacion = hotel.getHabitacion(piso, numero);
-        if (habitacion != null) {
+        Habitacion habitacion;
+        try {
+            habitacion = hotel.getHabitacion(piso, numero);
             habitacion.Deshabilitar();
             System.out.println("Habitación colocada fuera de servicio.");
-        } else {
-            System.out.println("No se encontró la habitación.");
+        } catch (HabitacionNoDisponible e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -224,24 +222,26 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int piso = scanner.nextInt();
         System.out.print("Ingrese el número de la habitación a modificar: ");
         int numero = scanner.nextInt();
+        Habitacion habitacion;
+        try {
+            habitacion = hotel.getHabitacion(piso, numero);
+        } catch (HabitacionNoDisponible e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("Estado actual de la habitación:");
+        System.out.println(habitacion.Detalles());
 
-        Habitacion habitacion = hotel.getHabitacion(piso, numero);
-        if (habitacion != null) {
-            System.out.println("Estado actual de la habitación:");
-            System.out.println(habitacion.Detalles());
-
-            System.out.print("¿Desea cambiar la disponibilidad de la habitación? (1 = Sí, 0 = No): ");
-            int cambiarDisponibilidad = scanner.nextInt();
-            if (cambiarDisponibilidad == 1) {
-                if (habitacion.Disponible()) {
-                    habitacion.Deshabilitar();
-                    System.out.println("La habitación ahora está fuera de servicio.");
-                } else {
-                    System.out.println("Habitación fuera de servicio. Habilitándola de nuevo...");
-                }
+        System.out.print("¿Desea cambiar la disponibilidad de la habitación? (1 = Sí, 0 = No): ");
+        int cambiarDisponibilidad = scanner.nextInt();
+        if (cambiarDisponibilidad == 1) {
+            if (habitacion.Disponible()) {
+                habitacion.Deshabilitar();
+                System.out.println("La habitación ahora está fuera de servicio.");
+            } else {
+                System.out.println("Habitación fuera de servicio. Habilitándola de nuevo...");
+                habitacion.Disponible(true);
             }
-        } else {
-            System.out.println("La habitación no existe.");
         }
     }
 
@@ -250,15 +250,17 @@ public class InterfazHotel implements Menu, MenuAdmin {
         boolean huespedesEncontrados = false;
         for (int piso = 0; piso < hotel.getPisos(); piso++) {
             for (int numero = 0; numero < hotel.getNumeros(); numero++) {
-                Habitacion habitacion = hotel.getHabitacion(piso, numero);
-                if (habitacion != null && !habitacion.Disponible()) {
-                    Huesped[] huespedes = habitacion.getHuespedes();
-                    for (Huesped huesped : huespedes) {
-                        if (huesped != null) {
-                            System.out.println(huesped.Detalles());
-                            huespedesEncontrados = true;
-                        }
-                    }
+                Habitacion habitacion;
+                try {
+                    habitacion = hotel.getHabitacion(piso, numero);
+                } catch (HabitacionNoDisponible e) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                Huesped[] huespedes = habitacion.getHuespedes();
+                for (Huesped huesped : huespedes) {
+                        System.out.println(huesped.Detalles());
+                        huespedesEncontrados = true;
                 }
             }
         }
@@ -276,7 +278,7 @@ public class InterfazHotel implements Menu, MenuAdmin {
         String usuarioAdmin = scanner.nextLine();
         System.out.print("Ingrese la contraseña: ");
         String adminPassword = scanner.nextLine();
-        admins[cantAdmins] = new Admin(nombresAdmin, apellidosAdmin, usuarioAdmin, adminPassword);
+        admins.add(new Admin(nombresAdmin, apellidosAdmin, usuarioAdmin, adminPassword));
         System.out.println("Usuario y contraseña actualizados.");
     }
 }

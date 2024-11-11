@@ -2,7 +2,7 @@ public abstract class Habitacion {
     final private int maxHuespedes; //determinado por el tipo de habitación
     private final int codigo;
     private final Huesped[] huespedes;
-    private float precioNoche; //determinado por el tipo de habitación
+    private final float precioNoche; //determinado por el tipo de habitación
     private int huespedesActuales;
     private boolean disponible;
 
@@ -48,13 +48,12 @@ public abstract class Habitacion {
      *
      * @param huesped el huésped a agregar
      */
-    public boolean AgregarHuesped(Huesped huesped) {
+    public void AgregarHuesped(Huesped huesped) {
         if (huespedesActuales < maxHuespedes) {
             huespedes[huespedesActuales] = huesped;
             huespedesActuales++;
-            return true;
         } else {
-            return false;
+            throw new ArrayIndexOutOfBoundsException("No hay espacio para más huéspedes");
         }
     }
 
@@ -82,6 +81,9 @@ public abstract class Habitacion {
         return disponible;
     }
 
+    public void Disponible(boolean disponible) {
+        this.disponible = disponible;
+    }
     /**
      * Deshabilita la habitación y elimina a los huéspedes
      * Elimina la reserva de los huéspedes, el hotel tiene que eliminar la reserva de su lista después

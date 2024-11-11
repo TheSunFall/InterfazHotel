@@ -1,6 +1,6 @@
 public interface MenuAdmin {
     void menuAdministradores();
-    void añadirHabitacion();
+    void aniadirHabitacion();
     void colocarHabitacionFueraDeServicio();
     void modificarHabitacion();
     void mostrarHuespedesRegistrados();
