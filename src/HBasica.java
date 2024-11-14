@@ -12,4 +12,5 @@ public class HBasica extends Habitacion {
     public String Detalles() {
         return "Habitación " + super.Detalles();
     }
+
 }

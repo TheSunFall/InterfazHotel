@@ -1,16 +1,31 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class InterfazHotel implements Menu, MenuAdmin {
-    private final Hotel hotel;
     private final Scanner scanner;
+    private Hotel hotel;
     private ArrayList<Admin> admins;
 
     public InterfazHotel(int pisos, int numeros) {
-        hotel = new Hotel(pisos, numeros);
+        FileInputStream fhotel;
+        FileInputStream fadmins;
+        try {
+            fhotel = new FileInputStream("hotel.dat");
+            fadmins = new FileInputStream("admins.dat");
+            ObjectInputStream inAdmins = new ObjectInputStream(fadmins);
+            ObjectInputStream in = new ObjectInputStream(fhotel);
+            hotel = (Hotel) in.readObject();
+            admins = (ArrayList<Admin>) inAdmins.readObject();
+            in.close();
+            inAdmins.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No se encontraron datos previos. Creando nuevo hotel...");
+            hotel = new Hotel(pisos, numeros);
+            admins = new ArrayList<Admin>();
+            admins.add(new Admin("Juan", "Pérez", "admin", "1234"));
+        }
         scanner = new Scanner(System.in);
-        admins = new ArrayList<Admin>();
-        admins.add(new Admin("Juan", "Pérez", "admin", "1234"));
     }
 
     public static void main(String[] args) {
@@ -54,11 +69,30 @@ public class InterfazHotel implements Menu, MenuAdmin {
                     break;
                 case 0:
                     System.out.println("¡Gracias por utilizar el sistema!");
+                    guardarDatos();
                     break;
                 default:
                     System.out.println("Opción no válida. Intente de nuevo.");
             }
         } while (opcion != 0);
+    }
+
+    public void guardarDatos() {
+        try {
+            FileOutputStream fhotel = new FileOutputStream("hotel.dat");
+            FileOutputStream fadmins = new FileOutputStream("admins.dat");
+            ObjectOutputStream out = new ObjectOutputStream(fhotel);
+            ObjectOutputStream outAdmins = new ObjectOutputStream(fadmins);
+            out.writeObject(hotel);
+            outAdmins.writeObject(admins);
+            out.flush();
+            outAdmins.flush();
+            out.close();
+            outAdmins.close();
+        } catch (IOException e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+
     }
 
     public void realizarReserva() {
@@ -87,7 +121,7 @@ public class InterfazHotel implements Menu, MenuAdmin {
         System.out.print("Ingrese el número de días de la reserva: ");
         int dias = scanner.nextInt();
         try {
-            hotel.CrearReserva(huespedes, piso, numero, dias);
+            hotel.CrearReserva(huespedes, piso - 1, numero - 1, dias);
             System.out.println("Reserva realizada con éxito.");
         } catch (HabitacionNoDisponible e) {
             System.out.println(e.getMessage());
@@ -117,7 +151,7 @@ public class InterfazHotel implements Menu, MenuAdmin {
         int numero = scanner.nextInt();
         Habitacion habitacion;
         try {
-            habitacion = hotel.getHabitacion(piso, numero);
+            habitacion = hotel.getHabitacion(piso-1, numero-1);
         } catch (HabitacionNoDisponible e) {
             System.out.println(e.getMessage());
             return;
@@ -253,14 +287,15 @@ public class InterfazHotel implements Menu, MenuAdmin {
                 Habitacion habitacion;
                 try {
                     habitacion = hotel.getHabitacion(piso, numero);
+                    Huesped[] huespedes = habitacion.getHuespedes();
+                    for (Huesped huesped : huespedes) {
+                        if (huesped != null) {
+                            System.out.println(huesped.Detalles());
+                            huespedesEncontrados = true;
+                        }
+
+                    }
                 } catch (HabitacionNoDisponible e) {
-                    System.out.println(e.getMessage());
-                    return;
-                }
-                Huesped[] huespedes = habitacion.getHuespedes();
-                for (Huesped huesped : huespedes) {
-                        System.out.println(huesped.Detalles());
-                        huespedesEncontrados = true;
                 }
             }
         }

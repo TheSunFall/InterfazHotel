@@ -1,4 +1,6 @@
-public abstract class Habitacion {
+import java.io.Serializable;
+
+public abstract class Habitacion implements Serializable {
     final private int maxHuespedes; //determinado por el tipo de habitación
     private final int codigo;
     private final Huesped[] huespedes;

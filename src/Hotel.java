@@ -1,11 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Hotel {
+public class Hotel implements Serializable {
     //atributos
     private final int pisos;
     private final int numeros;
     private final Habitacion[][] habitaciones;
-    private ArrayList<Reserva> reservas;
     //constructores
 
     /**
@@ -14,7 +14,6 @@ public class Hotel {
     public Hotel(int pisos, int numeros) {
         this.pisos = pisos;
         this.numeros = numeros;
-        this.reservas = new ArrayList<Reserva>();
         this.habitaciones = new Habitacion[pisos][numeros];
     }
 
@@ -76,7 +75,7 @@ public class Hotel {
                 }
             }
             if (c == 0) {
-                System.out.println("No hay habitaciones en el piso " + i);
+                System.out.println("No hay habitaciones en el piso " + (i+1));
             }
         }
     }
@@ -90,12 +89,13 @@ public class Hotel {
      * @param dias      la cantidad de días que durará la reserva
      */
     public void CrearReserva(Huesped[] huespedes, int piso, int numero, int dias) throws HabitacionNoDisponible {
-        if (habitaciones[piso][numero] == null || !habitaciones[piso][numero].Disponible()) {
+        if (habitaciones[piso][numero] == null) {
+            throw new HabitacionNoDisponible();
+        } else if (!habitaciones[piso][numero].Disponible()) {
             throw new HabitacionNoDisponible();
         }
         int codigo = (piso+1) * 100 + numero+1;
         Reserva reserva = new Reserva(codigo, dias, huespedes);
-        reservas.add(reserva);
 
         for (Huesped huesped : huespedes) {
             habitaciones[piso][numero].AgregarHuesped(huesped);
@@ -109,7 +109,6 @@ public class Hotel {
         }
         int codigo = (piso+1) * 100 + numero+1;
         Reserva reserva = new Reserva(codigo, dias, huesped);
-        reservas.add(reserva);
         habitaciones[piso][numero].AgregarHuesped(huesped);
     }
 }

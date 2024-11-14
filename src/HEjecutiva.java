@@ -12,4 +12,5 @@ public class HEjecutiva extends Habitacion {
     public String Detalles() {
         return "Habitación ejecutiva " + super.Detalles();
     }
+
 }
