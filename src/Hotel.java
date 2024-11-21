@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Hotel implements Serializable {
     //atributos
@@ -18,9 +17,9 @@ public class Hotel implements Serializable {
     }
 
     //métodos
-    public Habitacion getHabitacion(int piso, int numero) throws HabitacionNoDisponible {
+    public Habitacion getHabitacion(int piso, int numero) throws HabitacionNoValida {
         if (habitaciones[piso][numero] == null || piso >= pisos || numero >= numeros) {
-            throw new HabitacionNoDisponible();
+            throw new HabitacionNoValida();
         }
         return habitaciones[piso][numero];
     }
@@ -88,11 +87,11 @@ public class Hotel implements Serializable {
      * @param numero    el número de la habitación a reservar
      * @param dias      la cantidad de días que durará la reserva
      */
-    public void CrearReserva(Huesped[] huespedes, int piso, int numero, int dias) throws HabitacionNoDisponible {
+    public void CrearReserva(Huesped[] huespedes, int piso, int numero, int dias) throws HabitacionNoValida {
         if (habitaciones[piso][numero] == null) {
-            throw new HabitacionNoDisponible();
+            throw new HabitacionNoValida();
         } else if (!habitaciones[piso][numero].Disponible()) {
-            throw new HabitacionNoDisponible();
+            throw new HabitacionNoValida();
         }
         int codigo = (piso+1) * 100 + numero+1;
         Reserva reserva = new Reserva(codigo, dias, huespedes);
@@ -102,15 +101,14 @@ public class Hotel implements Serializable {
         }
     }
 
-    public void CrearReserva(Huesped huesped, int piso, int numero, int dias) throws HabitacionNoDisponible {
+    public void CrearReserva(Huesped huesped, int piso, int numero, int dias) throws HabitacionNoValida {
 
         if (habitaciones[piso][numero] == null || !habitaciones[piso][numero].Disponible()) {
-            throw new HabitacionNoDisponible();
+            throw new HabitacionNoValida();
         }
         int codigo = (piso+1) * 100 + numero+1;
         Reserva reserva = new Reserva(codigo, dias, huesped);
         habitaciones[piso][numero].AgregarHuesped(huesped);
     }
 }
-
 
