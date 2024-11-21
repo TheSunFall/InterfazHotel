@@ -1,5 +1,3 @@
-import java.time.LocalDate;
-
 public class TestHotel {
     public static void main(String[] args) {
         Huesped h1 = new Huesped("Juan", "Aguilar","DNI", "12345678", "Argentina");
@@ -16,13 +14,13 @@ public class TestHotel {
         }
         try {
             hotel.CrearReserva(h1, 1, 0, 3);
-        } catch (HabitacionNoDisponible e) {
+        } catch (HabitacionNoValida e) {
             System.out.println(e.getMessage());;
         }
         try {
             hotel.CrearReserva(h1, 0, 0, 3);
             System.out.println(h1.Detalles());
-        } catch (HabitacionNoDisponible e) {
+        } catch (HabitacionNoValida e) {
             System.out.println(e.getMessage());;
         }
 

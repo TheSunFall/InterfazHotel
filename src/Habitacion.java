@@ -25,7 +25,7 @@ public abstract class Habitacion implements Serializable {
      */
     public String Detalles() {
         if (!disponible) {
-            return codigo + " - Ocupada";
+            return codigo + " - No disponible";
         } else {
             return codigo + " - Disponible\nPrecio por noche: " + precioNoche + "\n";
         }
