@@ -16,7 +16,7 @@ public class InterfazHotel extends JFrame {
     private JPanel PanelAdmin;
     private JPanel PanelHabitaciones;
 
-    public InterfazHotel(int pisos, int numeros) {
+    public InterfazHotel() {
         FileInputStream fhotel;
         FileInputStream fadmins;
         try {
@@ -29,10 +29,13 @@ public class InterfazHotel extends JFrame {
             in.close();
             inAdmins.close();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("No se encontraron datos previos. Creando nuevo hotel...");
+            JOptionPane.showMessageDialog(null,"No se encontraron datos previos, se creará un nuevo hotel");
+            int pisos = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de pisos"));
+            int numeros = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de habitaciones por piso"));
             hotel = new Hotel(pisos, numeros);
             admins = new ArrayList<Admin>();
             admins.add(new Admin("Juan", "Pérez", "admin", "1234"));
+            JOptionPane.showMessageDialog(null, "Se ha creado un usuario administrador por defecto\nUsuario: admin\nContraseña: 1234");
         }
         setTitle("InterfazHotel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,7 +60,7 @@ public class InterfazHotel extends JFrame {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new InterfazHotel(3, 10);
+        JFrame frame = new InterfazHotel();
         frame.setVisible(true);
     }
 
