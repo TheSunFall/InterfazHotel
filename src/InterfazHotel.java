@@ -1,8 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -40,23 +39,19 @@ public class InterfazHotel extends JFrame {
         setContentPane(Panel);
         PanelHabitaciones.setLayout(new BoxLayout(PanelHabitaciones,BoxLayout.Y_AXIS));
         PanelHabitaciones.setBorder(new EmptyBorder(10, 10, 10, 10));
-        for (int piso = 0; piso < hotel.getPisos(); piso++) {
-            for (int numero = 0; numero < hotel.getNumeros(); numero++) {
-                Habitacion habitacion;;
-                try {
-                    habitacion = hotel.getHabitacion(piso, numero);
-                    HabitacionPanel panel = new HabitacionPanel(habitacion.Detalles(), habitacion.Disponible());
-                    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    PanelHabitaciones.add(panel);
-                } catch (HabitacionNoValida e) {
-                }
-            }
-        }
+        createUIComponents();
         pack();
         Confirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 validarAdmin(AdminUsr.getText(),new String(AdminPassword.getPassword()));
+            }
+        });
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarDatos();
+                System.exit(0);
             }
         });
     }
@@ -92,5 +87,19 @@ public class InterfazHotel extends JFrame {
             }
         }
         JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
+    }
+    private void createUIComponents() {
+        for (int piso = 0; piso < hotel.getPisos(); piso++) {
+            for (int numero = 0; numero < hotel.getNumeros(); numero++) {
+                Habitacion habitacion;;
+                try {
+                    habitacion = hotel.getHabitacion(piso, numero);
+                    HabitacionPanel panel = new HabitacionPanel(habitacion);
+                    panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    PanelHabitaciones.add(panel);
+                } catch (HabitacionNoValida e) {
+                }
+            }
+        }
     }
 }

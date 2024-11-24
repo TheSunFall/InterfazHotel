@@ -3,7 +3,7 @@ import java.io.Serializable;
 public abstract class Habitacion implements Serializable {
     final private int maxHuespedes; //determinado por el tipo de habitación
     private final int codigo;
-    private final Huesped[] huespedes;
+    private Huesped[] huespedes;
     private final float precioNoche; //determinado por el tipo de habitación
     private int huespedesActuales;
     private boolean disponible;
@@ -27,7 +27,7 @@ public abstract class Habitacion implements Serializable {
         if (!disponible) {
             return codigo + " - No disponible";
         } else {
-            return codigo + " - Disponible\nPrecio por noche: " + precioNoche + "\n";
+            return codigo + " - Disponible, Precio por noche: " + precioNoche + "\n";
         }
     }
 
@@ -99,15 +99,13 @@ public abstract class Habitacion implements Serializable {
         this.disponible = false;
     }
 
-    public int getHuespedesActuales() {
-        return huespedesActuales;
+    public int getMaxHuespedes() {
+        return maxHuespedes;
     }
 
-    public float getPrecioNoche() {
-        return precioNoche;
-    }
-
-    public Huesped[] getHuespedes() {
-        return huespedes;
+    public void CrearReserva(Huesped[] huespedes, int dias)  {
+        Reserva reserva = new Reserva(codigo, dias, huespedes);
+        this.disponible = false;
+        this.huespedes = huespedes;
     }
 }
