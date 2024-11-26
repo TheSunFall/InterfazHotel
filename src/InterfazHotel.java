@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -29,13 +30,26 @@ public class InterfazHotel extends JFrame {
             in.close();
             inAdmins.close();
         } catch (IOException | ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null,"No se encontraron datos previos, se creará un nuevo hotel");
-            int pisos = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de pisos"));
-            int numeros = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de habitaciones por piso"));
-            hotel = new Hotel(pisos, numeros);
-            admins = new ArrayList<Admin>();
-            admins.add(new Admin("Juan", "Pérez", "admin", "1234"));
-            JOptionPane.showMessageDialog(null, "Se ha creado un usuario administrador por defecto\nUsuario: admin\nContraseña: 1234");
+            JOptionPane.showMessageDialog(null,"No se encontraron datos previos, se creará un nuevo hotel","Creando nuevo hotel",JOptionPane.WARNING_MESSAGE);
+            JPanel Panel = new JPanel(new GridLayout(2, 2));
+            JSpinner PisosSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+            JSpinner NumerosSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+            Panel.add(new JLabel("Ingrese la cantidad de pisos:"));
+            Panel.add(PisosSpinner);
+            Panel.add(new JLabel("Ingrese la cantidad de habitaciones por piso:"));
+            Panel.add(NumerosSpinner);
+            int confirmar = JOptionPane.showConfirmDialog(null, Panel, "Configuración inicial", JOptionPane.OK_CANCEL_OPTION);
+            if (confirmar == JOptionPane.OK_OPTION) {
+                int pisos = (int) PisosSpinner.getValue();
+                int numeros = (int) NumerosSpinner.getValue();
+                hotel = new Hotel(pisos, numeros);
+                admins = new ArrayList<>();
+                admins.add(new Admin("Admin", "1", "admin", "1234"));
+                JOptionPane.showMessageDialog(null, "Se ha creado un usuario administrador por defecto\nUsuario: admin\nContraseña: 1234");
+            } else {
+                JOptionPane.showMessageDialog(null, "No se ha creado un hotel, el programa se cerrará", "Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
         }
         setTitle("InterfazHotel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,12 +58,7 @@ public class InterfazHotel extends JFrame {
         PanelHabitaciones.setBorder(new EmptyBorder(10, 10, 10, 10));
         createUIComponents();
         pack();
-        Confirmar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                validarAdmin(AdminUsr.getText(),new String(AdminPassword.getPassword()));
-            }
-        });
+        Confirmar.addActionListener(e -> validarAdmin(AdminUsr.getText(),new String(AdminPassword.getPassword())));
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -60,6 +69,11 @@ public class InterfazHotel extends JFrame {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         JFrame frame = new InterfazHotel();
         frame.setVisible(true);
     }
@@ -89,18 +103,19 @@ public class InterfazHotel extends JFrame {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
+        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos","Error",JOptionPane.ERROR_MESSAGE);
     }
     private void createUIComponents() {
         for (int piso = 0; piso < hotel.getPisos(); piso++) {
             for (int numero = 0; numero < hotel.getNumeros(); numero++) {
-                Habitacion habitacion;;
+                Habitacion habitacion;
                 try {
                     habitacion = hotel.getHabitacion(piso, numero);
                     HabitacionPanel panel = new HabitacionPanel(habitacion);
                     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
                     PanelHabitaciones.add(panel);
                 } catch (HabitacionNoValida e) {
+                    System.out.println("No hay habitación en el piso " + (piso + 1) + " y número " + (numero + 1));
                 }
             }
         }

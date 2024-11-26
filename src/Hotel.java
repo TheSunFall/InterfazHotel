@@ -36,9 +36,7 @@ public class Hotel implements Serializable {
      * Crea una habitación en el piso y número indicados
      */
     public void CrearHabitacion(int piso, int numero, char tipo) throws Sobreescritura {
-        if (habitaciones[piso][numero] != null) {
-            piso = piso + 1;
-            numero = numero + 1;
+        if (habitaciones[piso-1][numero-1] != null) {
             throw new Sobreescritura("Habitación en el piso " + piso + " y número " + numero);
         }
         int codigo = (piso) * 100 + numero;
@@ -80,13 +78,14 @@ public class Hotel implements Serializable {
     }
 
     /**
-     * Crea una reserva, la asigna a los huéspedes y asigna los huéspedes a las habitaciones
-     *
-     * @param huespedes arreglo de los huéspedes que realizarán la reserva
-     * @param piso      el piso de la habitación a reservar
-     * @param numero    el número de la habitación a reservar
-     * @param dias      la cantidad de días que durará la reserva
+     * Elimina la habitación en el piso y número indicados
      */
+    public void EliminarHabitacion(int i, int j) throws HabitacionNoValida {
+        if (habitaciones[i][j] == null) {
+            throw new HabitacionNoValida();
+        }
+        habitaciones[i][j] = null;
+    }
 
 }
 

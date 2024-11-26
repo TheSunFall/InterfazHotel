@@ -1,9 +1,7 @@
-import java.time.LocalDate;
-
 public class Huesped extends Persona {
-    private String tipoDocumento;
-    private String numeroDocumento;
-    private String pais;
+    private final String tipoDocumento;
+    private final String numeroDocumento;
+    private final String pais;
     private Reserva reserva;
     /**
      * Crea un huésped con datos básicos
