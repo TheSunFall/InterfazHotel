@@ -16,6 +16,7 @@ public class MenuAdmin extends JFrame {
     private JTextField NombreUsuario;
     private JPasswordField Password;
     private JPanel AdminPanelHabitaciones;
+    private JScrollPane ScrollHabitaciones;
     private final HotelChangeListener changeListener;
 
 

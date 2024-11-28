@@ -16,6 +16,7 @@ public class InterfazHotel extends JFrame {
     private JButton Confirmar;
     private JPanel PanelAdmin;
     private JPanel PanelHabitaciones;
+    private JScrollPane ScrollHabitaciones;
 
     public InterfazHotel() {
         FileInputStream fhotel;
@@ -56,6 +57,7 @@ public class InterfazHotel extends JFrame {
         setContentPane(Panel);
         PanelHabitaciones.setLayout(new BoxLayout(PanelHabitaciones,BoxLayout.Y_AXIS));
         PanelHabitaciones.setBorder(new EmptyBorder(10, 10, 10, 10));
+        ScrollHabitaciones.setViewportView(PanelHabitaciones);
         createUIComponents();
         pack();
         Confirmar.addActionListener(e -> validarAdmin(AdminUsr.getText(),new String(AdminPassword.getPassword())));
