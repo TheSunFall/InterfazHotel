@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 public class MenuAdmin extends JFrame {
     private final Hotel hotel;
-    private final ArrayList<Admin> admins;
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane TabsPanel;
     private JPanel panel1;
     private JTextField piso;
     private JTextField numero;
@@ -17,12 +16,11 @@ public class MenuAdmin extends JFrame {
     private JTextField NombreUsuario;
     private JPasswordField Password;
     private JPanel AdminPanelHabitaciones;
-    private HotelChangeListener changeListener;
+    private final HotelChangeListener changeListener;
 
 
     public MenuAdmin(Hotel hotel, ArrayList<Admin> admins, HotelChangeListener listener) {
         this.hotel = hotel;
-        this.admins = admins;
         this.changeListener = listener;
         setTitle("Menú de administración");
         setContentPane(panel1);
@@ -37,6 +35,7 @@ public class MenuAdmin extends JFrame {
             String piso = this.piso.getText();
             String numero = this.numero.getText();
             String tipo = (String) this.tipo.getSelectedItem();
+            assert tipo != null;
             aniadirHabitacion(Integer.parseInt(piso), Integer.parseInt(numero), tipo.charAt(0));
         });
 

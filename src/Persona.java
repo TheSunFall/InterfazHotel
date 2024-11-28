@@ -1,8 +1,8 @@
 import java.io.Serializable;
 
 public abstract class Persona implements Serializable {
-    private String nombres;
-    private String apellidos;
+    private final String nombres;
+    private final String apellidos;
 
 
     public Persona(String nombre, String apellidos) {
@@ -14,16 +14,8 @@ public abstract class Persona implements Serializable {
         return nombres;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
     public String getApellidos() {
         return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
     }
 
     public String DetallesMinimos() {

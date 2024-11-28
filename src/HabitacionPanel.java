@@ -10,17 +10,15 @@ public class HabitacionPanel extends JPanel {
     private JButton TerminarReserva;
     private JButton GenerarBoleta;
     private JButton ExtenderReserva;
-    private Habitacion habitacion;
+    private JLabel Detalles;
+    private final Habitacion habitacion;
     private HotelChangeListener changeListener;
 
     public HabitacionPanel(Habitacion h) {
         this.habitacion = h; // Guardamos la referencia a la habitación
-        Reservar = new JButton("Reservar");
-        TerminarReserva = new JButton("Terminar Reserva");
-        GenerarBoleta = new JButton("Generar Boleta");
-        ExtenderReserva = new JButton("Extender Reserva");
+        Detalles.setText(h.Detalles());  // Mostrar detalles de la habitación
 
-        add(new JLabel(h.Detalles()));  // Mostrar detalles de la habitación
+        add(Detalles);  // Mostrar detalles de la habitación
         add(Reservar);
         add(TerminarReserva);
         add(GenerarBoleta);
@@ -38,7 +36,7 @@ public class HabitacionPanel extends JPanel {
 
         // Acción de terminar reserva
         TerminarReserva.addActionListener(e -> {
-            int result = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea terminar la reserva?", "Confirmar terminación", JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(null, "Terminando " + h.getReserva().Detalles(), "Confirmar terminación", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
                 habitacion.Deshabilitar(); // Deshabilitar la habitación
                 JOptionPane.showMessageDialog(null, "Reserva terminada con éxito");
@@ -56,7 +54,8 @@ public class HabitacionPanel extends JPanel {
         ExtenderReserva.addActionListener(e -> {
             if (!habitacion.Disponible()) {
                 // Si la habitación tiene una reserva activa, extender la reserva
-                JPanel panelDias = new JPanel(new GridLayout(1, 2));
+                JPanel panelDias = new JPanel(new GridLayout(3, 1));
+                panelDias.add(new JLabel(h.getReserva().Detalles()));
                 panelDias.add(new JLabel("Ingrese la cantidad de días a extender:"));
                 JSpinner diasSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 365, 1));
                 panelDias.add(diasSpinner);
@@ -67,7 +66,7 @@ public class HabitacionPanel extends JPanel {
                     habitacion.getReserva().Extender(dias); // Extender la reserva
                     JOptionPane.showMessageDialog(null, "Reserva extendida con éxito");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Extensión cancelada", "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Extensión cancelada", "Cancelación", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Esta habitación no tiene una reserva activa", "Error", JOptionPane.ERROR_MESSAGE);
@@ -88,7 +87,7 @@ public class HabitacionPanel extends JPanel {
     }
 
     private void reservarHabitacion(Habitacion h) {
-        int num = 0;
+        int num;
         JPanel panelNum = new JPanel(new GridLayout(1, 2));
         panelNum.add(new JLabel("Ingrese el número de huéspedes:"));
         JSpinner numSpinner = new JSpinner(new SpinnerNumberModel(1, 1, h.getMaxHuespedes(), 1));

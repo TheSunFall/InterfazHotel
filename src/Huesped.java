@@ -32,20 +32,11 @@ public class Huesped extends Persona {
         return detalles + '\n';
     }
 
-    // Obtener tipo de documento del huésped
-    public String getTipoDocumento() {
-        return tipoDocumento;
-    }
-
     // Obtener número de documento del huésped
     public String getNumeroDocumento() {
         return numeroDocumento;
     }
 
-    // Obtener país del huésped
-    public String getPais() {
-        return pais;
-    }
 }
 
 

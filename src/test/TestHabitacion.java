@@ -1,5 +1,3 @@
-import java.time.LocalDate;
-
 class TestHabitacion {
     public static void main(String[] args) {
         boolean[] pruebas = new boolean[3];

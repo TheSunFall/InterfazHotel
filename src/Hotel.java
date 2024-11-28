@@ -56,28 +56,6 @@ public class Hotel implements Serializable {
     }
 
     /**
-     * Muestra las habitaciones existentes
-     * indicando si están ocupadas o disponibles
-     */
-    public void VerHabitacionesDisponibles() {
-        System.out.print("-------------------------------\n");
-        System.out.println("Habitaciones Disponibles:");
-        System.out.print("-------------------------------\n");
-        for (int i = 0; i < pisos; i++) {
-            int c = 0;
-            for (int j = 0; j < numeros; j++) {
-                if (habitaciones[i][j] != null) {
-                    c++;
-                    System.out.println(habitaciones[i][j].Detalles());
-                }
-            }
-            if (c == 0) {
-                System.out.println("No hay habitaciones en el piso " + (i+1));
-            }
-        }
-    }
-
-    /**
      * Elimina la habitación en el piso y número indicados
      */
     public void EliminarHabitacion(int i, int j) throws HabitacionNoValida {
@@ -88,18 +66,18 @@ public class Hotel implements Serializable {
     }
 
     public void CambiarTipoHabitacion(int piso, int numero, char tipo) throws HabitacionNoValida {
-        Habitacion habitacion = getHabitacion(piso, numero);
+        getHabitacion(piso, numero);
 
         // Cambiar el tipo de la habitación
         switch (tipo) {
             case 'b':
-                habitaciones[piso][numero] = new HBasica(numero);
+                habitaciones[piso][numero] = new HBasica((piso+1)*100 + (numero+1));
                 break;
             case 'e':
-                habitaciones[piso][numero] = new HEjecutiva(numero);
+                habitaciones[piso][numero] = new HEjecutiva((piso+1)*100 + (numero+1));
                 break;
             case 's':
-                habitaciones[piso][numero] = new HSuite(numero);
+                habitaciones[piso][numero] = new HSuite((piso+1)*100 + (numero+1));
                 break;
             default:
                 throw new IllegalArgumentException("Tipo de habitación no válido");

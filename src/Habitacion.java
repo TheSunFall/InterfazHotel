@@ -8,7 +8,7 @@ public abstract class Habitacion implements Serializable {
     private int huespedesActuales;
     private boolean disponible;
     private Reserva reserva; // Campo para almacenar la reserva asociada a esta habitación
-    private HotelChangeListener changeListener;
+    private transient HotelChangeListener changeListener;
 
 
     public void setChangeListener(HotelChangeListener listener) {
@@ -89,10 +89,6 @@ public abstract class Habitacion implements Serializable {
         return disponible;
     }
 
-    public void Disponible(boolean disponible) {
-        this.disponible = disponible;
-    }
-
     /**
      * Deshabilita la habitación y elimina a los huéspedes
      * Elimina la reserva de los huéspedes, el hotel tiene que eliminar la reserva de su lista después
@@ -139,10 +135,6 @@ public abstract class Habitacion implements Serializable {
      */
     public float getPrecio() {
         return precioNoche;
-    }
-
-    public boolean isDisponible() {
-        return reserva == null ;
     }
 
     public int getCodigo() {

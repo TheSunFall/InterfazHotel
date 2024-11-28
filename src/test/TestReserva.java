@@ -1,5 +1,3 @@
-import java.time.LocalDate;
-
 public class TestReserva {
     public static void main(String[] args) {
         Huesped[] huespedes = new Huesped[2];
